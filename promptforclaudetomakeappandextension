@@ -1,0 +1,322 @@
+make this.  we will do apk with github. but i think we will do this later. u just build now. yeah my gemni is login, we will just give extenion chat link, simple. it will open and do. i did this before too this isvery easy , it doesnot see it as so much automation harm. start! make sure app ui looks good and extension is good to use, it should not close if i click some other button or whatver. start
+ (btw in prompt, i dont mean call like "call" in phone, what i mean is ui interface of it hehe of call. "  btw its very easy, chrome doesnot see this as like omg automation, when it comes from extension. 
+# Build My Personal Life-Awareness AI — Android App + Chrome Extension
+
+I want you to build a connected product consisting of TWO applications:
+
+1. An Android application for my Vivo V2120 (Android 12).
+2. A Google Chrome extension for my laptop.
+
+These two applications must communicate with each other through Supabase.
+
+This is not an ordinary productivity app. The central idea is to create an AI that continuously observes my daily activities, understands what I am doing, remembers my life, tracks my goals, and actively communicates with me to help me achieve them.
+
+I will explain the complete vision and expected behaviour. You are responsible for choosing appropriate technologies and implementing the system.
+
+## PART 1 — ANDROID APPLICATION
+
+### 1\. Automatic camera capture
+
+The Android app should automatically capture an image every 15 minutes.
+
+The phone has two cameras:
+
+- Back camera.
+- Front camera.
+
+The camera system should be intelligent.
+
+Initially, use the back camera to capture my surroundings. The image should be saved with its exact capture timestamp.
+
+If the back-camera image is black, obstructed, or otherwise unusable, send it for AI interpretation.
+
+If AI determines that the image is unusable, immediately request another image using the front camera instead of waiting for the next 15-minute interval.
+
+If the front camera also produces an unusable image, the AI should contact me through a phone call.
+
+Example:
+
+"Yooo Umer, I can't see anything. What are you doing? Are you hiding from me? 😂"
+
+Other possible situations:
+
+- Back camera captures food: AI identifies what I'm eating.
+- Back camera captures my room: AI recognizes the environment.
+- Front camera captures me: AI observes my visible activity.
+- Front camera captures the ceiling: AI understands that the phone might be lying on a surface.
+
+Never assume something with certainty when the image doesn't establish it.
+
+### 2\. Manual image capture
+
+I also want a button to capture an image whenever I want.
+
+For example, I might want to show the AI my food, my surroundings, something I'm working on, or something I want its opinion about.
+
+Manual images should enter exactly the same processing pipeline as automatic images.
+
+### 3\. Background operation
+
+The app should attempt to operate reliably in the background and continue scheduled captures.
+
+My target device is Vivo V2120 running Android 12.
+
+Investigate Android background camera restrictions and available approaches. Shizuku may be explored as an additional permission/system-access helper if necessary.
+
+
+
+
+### 4\. Supabase connection
+
+Every captured image must be associated with:
+
+- Unique image ID.
+- Capture timestamp.
+- Camera used.
+- Processing status.
+- AI interpretation.
+- Any relevant error information.
+
+Images must be uploaded to Supabase and made available to the Chrome extension.
+
+The original capture timestamp must always be preserved, even if Gemini processes the image hours later.
+
+## PART 2 — CHROME EXTENSION
+
+The Chrome extension is the visual AI processing engine.
+
+My laptop's Chrome browser stays open throughout the day. You can assume it is available during normal operation.
+
+### 1\. Receive images
+
+The extension should connect to Supabase and continuously check for pending images.
+
+Whenever an image arrives, the extension should receive it and add it to a processing queue.
+
+Each image must be processed only once.
+
+If multiple images accumulate, process them chronologically.
+
+Never lose an image simply because processing failed.
+
+### 2\. Use Gemini through its website
+
+Here is an important part of my approach.
+
+I want to use Gemini's free web interface instead of paying for image-analysis API calls.
+
+The extension should automatically open and interact with Gemini in Chrome.
+
+Create a dedicated Gemini conversation with initial instructions explaining:
+
+- Who I am.
+- What my room looks like.
+- What I look like.
+- Which people are my family and friends.
+- What environments I commonly visit.
+- How images should be interpreted.
+- How uncertain observations should be reported.
+
+I will provide reference images of myself, my family, friends and rooms.
+
+The Gemini conversation should interpret each uploaded image according to these instructions.
+
+For example:
+
+Image interpretation:
+"Umer is sitting at a table eating a samosa. Two other people are visible."
+
+Another:
+"Umer appears to be exercising at home."
+
+Another:
+"The image is almost entirely black. Nothing identifiable is visible."
+
+The extension must also send the original capture timestamp alongside each image.
+
+### 3\. Send interpretations to Android
+
+After Gemini responds, the extension should extract its textual interpretation and send it to Supabase.
+
+The Android app should receive the interpretation and associate it with the original image and timestamp.
+
+### 4\. Free text AI for decision-making
+
+I want to use a free Gemini text model through its web interface for the app's decision-making and conversation intelligence too.
+
+The visual AI describes what it sees.
+
+The text AI evaluates that description against my goals, previous observations, conversations and history.
+
+It decides whether an intervention is necessary.
+
+For example:
+
+Observation:
+"Umer is eating a burger at 8:57 PM."
+
+Goal:
+"Umer wants to lose weight."
+
+Previous context:
+"Umer ate a burger yesterday and exercised today at 5:08 PM."
+
+The AI should understand all of this before deciding what to say.
+
+## PART 3 — THE AI PHONE CALL SYSTEM
+
+This is one of the most important features.
+
+The Android application should be capable of initiating calls to me when the AI decides an intervention is necessary.
+
+Example:
+
+At 8:57 PM, Gemini identifies me eating a burger.
+
+The text AI evaluates the observation and decides to intervene.
+
+The Android app receives the prepared message and calls me.
+
+When I answer, it speaks using text-to-speech.
+
+Example:
+
+"Umer, why the fuck are you eating this? Did you forget your goal?"
+
+I respond:
+
+"I'm hungry. I haven't eaten properly today."
+
+The app records my response, converts my speech to text, and sends it to the Chrome extension through Supabase.
+
+The extension submits my response to the same Gemini conversation.
+
+Gemini considers the conversation history and generates a reply.
+
+The extension extracts that reply and sends it back to the Android app.
+
+The app speaks the reply through text-to-speech.
+
+This creates a continuous conversational loop.
+
+The conversation should continue until either I end it or the AI concludes it naturally.
+
+Every conversation must be recorded and associated with the relevant events.
+
+For the first version, use ordinary available text-to-speech. Voice cloning can be added later.
+
+Important: Implement calls through a supported Android calling mechanism, with the required permissions and user controls. Do not assume arbitrary background calling is automatically permitted.
+
+## PART 4 — MY GOALS AND PERSONAL CONTEXT
+
+I should be able to tell the AI what I want to achieve.
+
+Examples:
+
+- I want to lose weight.
+- I want to learn programming.
+- I want to earn money.
+- I want to stop wasting time.
+- I want to study mathematics.
+- I want to improve my daily routine.
+
+The AI should understand my goals, help create plans, and continuously compare my actual behaviour against those plans.
+
+For example, if my goal is weight loss, it should understand:
+
+- What I eat.
+- When I eat.
+- Whether I exercise.
+- How often I exercise.
+- My previous food observations.
+- My previous conversations about food.
+
+If my goal is studying, it should understand my study activity and compare it with my intended study schedule.
+
+The system must support multiple goals simultaneously.
+
+## PART 5 — LONG-TERM MEMORY AND LIFE TIMELINE
+
+I want a persistent record of my life.
+
+The system should maintain:
+
+1. Image history.
+2. AI-generated descriptions.
+3. Capture timestamps.
+4. Daily activity timelines.
+5. Goals and plans.
+6. Conversations with the AI.
+7. Important decisions.
+8. Behavioural patterns.
+9. Historical progress.
+
+Use a RAG-based memory system so the text AI can retrieve relevant previous information instead of receiving my entire history in every request.
+
+For example, I should be able to ask:
+
+"What did I eat yesterday?"
+
+"How many times did I exercise this week?"
+
+"When was the last time I studied mathematics?"
+
+"Compare my productivity this month with last month."
+
+The AI should use actual recorded information rather than inventing answers.
+
+## PART 6 — THE PERSONALITY
+
+I don't want a generic corporate assistant.
+
+I want an AI companion that talks naturally, remembers previous conversations, understands context, and can use humour, sarcasm, strictness and casual language.
+
+It should be able to challenge me when my actions conflict with my goals.
+
+However, it should also understand explanations.
+
+If I eat a burger because I'm with friends, it shouldn't blindly accuse me of failure.
+
+Its personality should feel like a continuing relationship rather than isolated notifications.
+
+## PART 7 — THE FIRST BUILD
+
+Do not attempt to implement every advanced feature simultaneously.
+
+Build the foundation first, but structure the project so that future features can be added without rebuilding everything.
+
+My priorities:
+
+1. Working Android application.
+2. Automatic and manual image capture.
+3. Timestamped image storage.
+4. Supabase connection.
+5. Working Chrome extension.
+6. Automatic Gemini image processing.
+7. Return image interpretations to Android.
+8. Basic text AI decision-making.
+9. Text-to-speech and conversational interaction.
+10. Long-term memory and RAG.
+
+Create a clean, understandable interface.
+
+The Android app and Chrome extension must function as one connected product, not two unrelated prototypes.
+
+## IMPORTANT DEVELOPMENT INSTRUCTIONS
+
+- Do not merely describe how to build this. Actually build it.
+- Make sensible technical decisions yourself.
+- Explain technical obstacles in simple language.
+- Do not abandon a feature merely because the first approach encounters a restriction. Investigate alternatives.
+- Prioritize working functionality over impressive-looking mockups.
+- Do not silently replace requested features with simulated functionality.
+- Test each major feature before moving to the next.
+- Keep the project organized and maintainable.
+- Clearly distinguish completed features from features that still need testing.
+- Never lose pending images or their timestamps.
+- Do not pretend an AI observation is certain when the image is ambiguous.
+- Keep camera operation visible and controllable, with appropriate privacy safeguards.
+
+.please 
+
+I want to build this product, not just discuss it. please give me complete app and extension . both zips.
